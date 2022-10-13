@@ -10,6 +10,8 @@ import { AddNewtransaction } from "./expenses";
 import { Reports } from "./expenseReports";
 import Card from "@mui/material/Card";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.scss";
+import { ListItem } from "@mui/material";
 {
   /* <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
@@ -22,7 +24,6 @@ export const App = () => {
   return (
     <div>
       <Box sx={{ display: "flex" }}>
-        {/* <Router> */}
         <CssBaseline />
         <AppBar position="fixed">
           <Toolbar>
@@ -43,17 +44,9 @@ export const App = () => {
               }}
             >
               <Card style={{ marginTop: "10px", height: "100%" }}>
-                <ul style={{ listStyleType: "none", padding: 1 }}>
-                  <li
-                    style={{
-                      marginTop: "10px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
                     <Link
                       to="/"
+                      className="nav-bar"
                       style={{
                         textDecoration: "none",
                         display: "flex",
@@ -61,12 +54,11 @@ export const App = () => {
                         alignItems: "center",
                       }}
                     >
-                      Dashboard
+                      <ListItem>Dashboard</ListItem>
                     </Link>
-                  </li>
-                  <li style={{ marginTop: "10px" }}>
                     <Link
                       to="/expense"
+                      className="nav-bar"
                       style={{
                         textDecoration: "none",
                         display: "flex",
@@ -74,12 +66,11 @@ export const App = () => {
                         alignItems: "center",
                       }}
                     >
-                      Expenses
+                      <ListItem>Expenses</ListItem>
                     </Link>
-                  </li>
-                  <li style={{ marginTop: "10px" }}>
                     <Link
                       to="/reports"
+                      className="nav-bar"
                       style={{
                         textDecoration: "none",
                         display: "flex",
@@ -87,25 +78,12 @@ export const App = () => {
                         alignItems: "center",
                       }}
                     >
-                      Reports
+                      <ListItem>Reports</ListItem>
                     </Link>
-                  </li>
-                </ul>
               </Card>
-
-              {/* <Switch>
-            {routes.map((route, index) => (
-              // <Route
-              //   key={index}
-              //   path={route.path}
-              //   exact={route.exact}
-              //   children={<route.sidebar />}
-              // />
-            ))}
-          </Switch> */}
             </div>
 
-            <div style={{ flex: 1, padding: "70px", marginTop: "10px" }}>
+            <div style={{ flex: 1, padding: "20px", marginTop: "20px" }}>
               <Switch>
                 {routes.map((route, index) => (
                   <Route

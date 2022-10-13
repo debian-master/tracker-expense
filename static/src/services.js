@@ -1,16 +1,5 @@
 import axios from "axios";
 
-// export const getExpensesList = async () => {
-//   await axios
-//     .get("127.0.0.1:8801/get")
-//     .then((response) => {
-//       return response.data;
-//     })
-//     .catch((error) => {
-//       return error;
-//     });
-// };
-
 export const getTransactionHistory = async () => {
   try {
     const response = await axios({
@@ -110,6 +99,28 @@ export const getCreditDebit = async (value, id) => {
   try {
     const response = await axios.get(
       `http://localhost:8000/get-transation-type-data/`
+    );
+    return response?.data;
+  } catch (err) {
+    //   return err;
+  }
+};
+
+export const deletePayment = async (id) => {
+  try {
+    const response = await axios.delete(
+      `http://localhost:8000/transaction/${id}/delete/`
+    );
+    return response?.data;
+  } catch (err) {
+    //   return err;
+  }
+};
+
+export const dashboardChartApi = async () => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/get-dashboard-chart/`
     );
     return response?.data;
   } catch (err) {

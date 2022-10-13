@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
+import { Container } from "@mui/material";
 import {
   AreaChart,
   Area,
@@ -11,7 +12,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import { getCreditDebit, getTransactionHistory } from "./services";
+import { getCreditDebit, getTransactionHistory, dashboardChartApi } from "./services";
 import { TransactionHistory } from "./transactionHistory";
 
 import {
@@ -24,11 +25,12 @@ export const Dashboard = () => {
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expenseList, setExpenseList] = useState([]);
-  const [credit, setCredit] = useState(0)
-  const [debit, setDebit] = useState(0)
+  const [credit, setCredit] = useState(0);
+  const [debit, setDebit] = useState(0);
 
   useEffect(() => {
     fetchData();
+    console.log('all effect')
   }, []);
 
   const fetchData = async () => {
@@ -44,58 +46,65 @@ export const Dashboard = () => {
     await getExpensesList(0, 0, 0)
       .then((res) => {
         const destructeredList = getDestructeredExpenseList(res);
-        setExpenseList(destructeredList);
         setLoading(true);
       })
       .catch((err) => {})
       .finally(() => {
         setLoading(false);
       });
-      await getCreditDebit().then((res)=>{
-        console.log('resres',res)
-        setCredit(res?.Incoming)
-        setDebit(res?.Outgoing)
-      })
+    await getCreditDebit().then((res) => {
+      setCredit(res?.Incoming);
+      setDebit(res?.Outgoing);
+    });
+    await dashboardChartApi().then((res)=>{
+      setExpenseList(res)
+    })
   };
 
   return (
-    <>
-      <Row>
+      <Row style={{marginTop:40}}>
         <Col md={8}>
-            <Row>
-          <Card sx={{ maxWidth: 345, height: 150, marginLeft: '10px' }}>
-            <Typography gutterBottom variant="h5" component="div">
-              Incoming
-            </Typography>
-            <CardContent>
-              <Typography variant="body2" color="text.secondary">
-                {credit[0]?.totalAmount}
+          <Row>
+          <Col md={6}>
+            <Card
+              sx={{
+                // maxWidth: 385,
+                // height: 150,
+                // marginLeft: "10px",
+              }}
+            >
+              <Typography gutterBottom variant="h4" component="div">
+                Credit
               </Typography>
-            </CardContent>
-            {/* <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions> */}
-          </Card>
-          <Card sx={{ maxWidth: 345, height: 150, marginLeft:'25px' }}>
-            <Typography gutterBottom variant="h5" component="div">
-              Outgoing
-            </Typography>
-            <CardContent>
-              <Typography variant="body2" color="text.secondary">
-              {debit[0]?.totalAmount}
+                <Typography variant="h4" color="#006400"
+                style={{display: "flex",
+                justifyContent: "center",
+                alignItems: "center",}}>
+                  {`+ $ ${credit[0]?.totalAmount}`}
+                </Typography>
+            </Card>
+            </Col>
+            <Col md={6}>
+            <Card
+              sx={{
+                // maxWidth: 385,
+                // height: 150,
+                // padding: "20px",
+                // marginLeft:"12px"
+              }}
+            >
+              <Typography gutterBottom variant="h4" component="div">
+                Debit
               </Typography>
-            </CardContent>
-            {/* <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions> */}
-          </Card>
+                <Typography variant="h4" color="#C32148"
+                style={{display: "flex",
+                justifyContent: "center",
+                alignItems: "center",}}>
+                  {`- $ ${debit[0]?.totalAmount}`}
+                </Typography>
+            </Card>
+            </Col>
           </Row>
-          {/* </Col> */}
-          {/* </Row> */}
-          {/* <Row style={{ marginTop: "20px" }}> */}
-          {/* <Col md={8}> */}
           <Card style={{ marginTop: "20px" }}>
             <AreaChart
               width={700}
@@ -109,21 +118,25 @@ export const Dashboard = () => {
               }}
             >
               <CartesianGrid />
-              <XAxis dataKey="expenseCategory" />
-              <YAxis type='number' domain={[0, 2000]} allowDataOverflow={true}/>
+              <XAxis dataKey="expense_name" />
+              <YAxis
+                type="number"
+                domain={[0, 2000]}
+                allowDataOverflow={true}
+              />
               <Tooltip />
               <Area
                 type="monotone"
-                dataKey="amount"
+                dataKey="credit"
                 stroke="#8884d8"
                 fill="#8884d8"
               />
-              {/* <Area
+              <Area
                 type="monotone"
-                dataKey="amount"
-                stroke="#8884d8"
-                fill="#8884d8"
-              /> */}
+                dataKey="debit"
+                stroke="#C32148"
+                fill="#C32148"
+              />
             </AreaChart>
           </Card>
         </Col>
@@ -131,6 +144,6 @@ export const Dashboard = () => {
           <TransactionHistory resData={historyData} isLoading={loading} />
         </Col>
       </Row>
-    </>
+      // </Container>
   );
 };

@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.nav-bar {
+  text-decoration: none !important;
+  color: black !important;
+  li {
+    font-size: 1em;
+    border-bottom: thin solid #ccc;
+    cursor: pointer;
+    &:hover {
+      background-color: rgb(224, 224, 224);
+    }
+  }
+}

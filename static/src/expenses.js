@@ -108,12 +108,10 @@ export const AddNewtransaction = () => {
       editable: true,
       renderCell: (value) => {
         return (
-          <>
             <div>
               <GridViewRounded />
               {value?.value}
             </div>
-          </>
         );
       },
     },
@@ -141,6 +139,19 @@ export const AddNewtransaction = () => {
     {
       field: "transactionType",
       headerName: "Transaction Type",
+      renderCell: (value) => {
+        let transactionType = 'Debit'
+        let color = '#C32148'
+        if (value?.value){
+          transactionType = 'Credit'
+          color = '#006400'
+        }
+        return (
+          <div style={{color:`${color}`}}>
+            {transactionType}
+          </div>
+        )
+      },
       width: 150,
     },
     {
@@ -186,7 +197,7 @@ export const AddNewtransaction = () => {
 
   return (
     <>
-      <div style={{ height: "100%" }}>
+      <div style={{ height: "100%", marginTop:40 }}>
         <Row>
           <Col md={10}>
             {/* <InputLabel id="demo-simple-select-standard-label">
