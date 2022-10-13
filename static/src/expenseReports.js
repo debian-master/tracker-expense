@@ -148,9 +148,7 @@ export const Reports = () => {
           style={{
             width: 200,
             height: 40,
-            display: "flex",
-            alignContent: "center",
-            backgroundColor: "white",
+            backgroundColor:'white'
           }}
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -178,7 +176,7 @@ export const Reports = () => {
     );
   };
   return (
-    <Box sx={{ width: "100%", typography: "body1" }}>
+    <Box sx={{ width: "100%", typography: "body1", marginTop:3 }}>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">

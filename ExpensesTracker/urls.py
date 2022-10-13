@@ -3,7 +3,7 @@ from django.urls import path
 
 from expenses_app.views import (
     TransactionHistory, PaymentsView, FilterOptions, CatergoryWiseExpense, 
-    GenerateReports
+    GenerateReports, DashboardChart
 )
 
 urlpatterns = [
@@ -16,4 +16,6 @@ urlpatterns = [
     path('get-transation-type-data/', CatergoryWiseExpense.as_view()),
     path('get-category-filters/', FilterOptions.as_view()),
     path('get-reports/',GenerateReports.as_view()),
+    path('transaction/<int:pk>/delete/',PaymentsView.as_view()),
+    path('get-dashboard-chart/',DashboardChart.as_view())
 ]
