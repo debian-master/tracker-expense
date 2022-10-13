@@ -1,7 +1,7 @@
 from django.db import transaction
 import xlwt
 from rest_framework.views import APIView
-from django.db.models import Sum, F, Value
+from django.db.models import Sum, F, Value, Q, FloatField
 from rest_framework.response import Response
 from django.utils.decorators import method_decorator
 from django.db.models.functions import Coalesce
@@ -73,8 +73,14 @@ class PaymentsView(APIView):
 
     def delete(self, request, *args, **kwargs):
         '''This Api is to disable a transaction'''
-        a=10290123
-        return Response(data="success", status=HTTP_200_OK)
+        try:
+            payment_id = kwargs.get('pk', 0)
+            if payment_id:
+                PaymentTransactions.objects.filter(pk=payment_id).update(is_state=1)
+                return Response(data="success", status=HTTP_200_OK)
+            return Response(data="No transaction with this id", status=HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(data="Error Occured", status=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class FilterOptions(APIView):
@@ -95,13 +101,13 @@ class FilterOptions(APIView):
 class CatergoryWiseExpense(APIView):
     '''
     This API will return Incoming (credit) and Outgoing (Debit) Expenses,
-    currently used for dashbard
+    currently used for dashboard
     '''
     def get(self, request, *args, **kwargs):
         credit = PaymentTransactions.objects.filter(
-            is_state=0, flag=0).values('flag').annotate(totalAmount = Sum(F('amount'))
+            is_state=0, flag=1).values('flag').annotate(totalAmount = Sum(F('amount'))
         )
-        debit = PaymentTransactions.objects.filter(is_state=0, flag=1
+        debit = PaymentTransactions.objects.filter(is_state=0, flag=0
             ).values('flag').annotate(totalAmount = Sum(F('amount'))
         )
         return Response(data={
@@ -178,3 +184,18 @@ class GenerateReports(APIView):
             return response
         except Exception as e:
             return Response('Error Occured', status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DashboardChart(APIView):
+
+    def get(self, request, *args, **Kwargs):
+        dashboard = PaymentTransactions.objects.filter(
+            is_state=0
+        ).values('expense_type__master_type').annotate(
+            expense_name = F('expense_type__master_type__type_name'),
+            credit = Coalesce(
+                Sum('amount', filter=Q(flag=1)), Value(0.0), output_field=FloatField()),
+            debit = Coalesce(
+                Sum('amount', filter=Q(flag=0)), Value(0.0), output_field=FloatField()),
+        )
+        return Response(data=dashboard, status=HTTP_200_OK)
